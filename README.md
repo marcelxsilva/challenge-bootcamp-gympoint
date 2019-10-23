@@ -58,7 +58,9 @@ Obs: o usuário só podera fazer 5 checkins dentro de 7 dias.
 Rotas:
 /listar todos os checkins
 / listar checkin de usuário especifico
+
 ---
+
 3ª Pedido de auxilio
 O usuário pode precisar de algum tipo de ajuda.
 tabela: help_orders:
