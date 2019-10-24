@@ -1,11 +1,14 @@
 import { Router } from 'express';
 
-import CreateRegistrationPlanController from './app/Controllers/CreateRegistrationPlanController';
+import authMiddleware from './app/middlewares/auth';
+import UsersController from './app/Controllers/UsersController';
+import SessionController from './app/Controllers/SessionController';
+
 const routes = new Router();
 
-routes.get('/', CreateRegistrationPlanController.index);
-routes.post('/', CreateRegistrationPlanController.store);
-routes.put('/', CreateRegistrationPlanController.update);
-routes.delete('/', CreateRegistrationPlanController.delete);
+routes.post('/users', UsersController.store);
+routes.post('/session', SessionController.store);
+
+routes.use(authMiddleware);
 
 export default routes;

@@ -6,7 +6,8 @@ module.exports = {
       student_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        autoIncrement: true
+        autoIncrement: true,
+        primaryKey: true
       },
       plan_id: {
         type: Sequelize.INTEGER,
