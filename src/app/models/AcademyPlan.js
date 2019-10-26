@@ -8,6 +8,8 @@ class AcademyPlan extends Model {
       duration: Sequelize.STRING,
       price: Sequelize.STRING,
     },{sequelize})
+    
+    return this;
   }
 }
 export default AcademyPlan;
