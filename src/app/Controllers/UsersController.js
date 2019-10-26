@@ -32,8 +32,8 @@ class UserController {
     const schema = yup.object().shape({
       email: yup.string().email().required(),
       name: yup.string(),
-      oldPassword: yup.string().min(4),
-      password_entry: yup.string().min(4).when('oldPassword', (password_entry, field) => {
+      oldPassword: yup.string(),
+      password_entry: yup.string().when('oldPassword', (password_entry, field) => {
         password_entry ? field.required() : field;
       })
     });
@@ -44,7 +44,7 @@ class UserController {
     const user = await Users.findByPk(req.userId);
 
     if (email !== user.email) {
-      const userExists = await User.findOne({ where: { email: email } });
+      const userExists = await Users.findOne({ where: { email: email } });
       if (userExists) { return res.status(400).json({ error: 'email already exists' }); }
     }
 

@@ -10,7 +10,8 @@ class User extends Model {
       email: Sequelize.STRING,
       password_entry: Sequelize.VIRTUAL,
       password: Sequelize.STRING,
-      level: Sequelize.INTEGER
+      level: Sequelize.INTEGER,
+      status: Sequelize.BOOLEAN
     }, {
       sequelize,
     });

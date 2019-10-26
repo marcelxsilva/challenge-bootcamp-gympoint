@@ -10,22 +10,28 @@ class SessionController {
       password: yup.string().required()
     });
 
-    if (!(await schema.isValid(req.body))) {
+    if (!(await schema.isValid(req.headers))) {
       return res.status(400).json({ error: 'validation fails' })
     }
-    const { email, password } = req.body;
+    const { email, password } = req.headers;
     const user = await User.findOne({ where: { email } });
     if (!user) { res.status(401).json({ error: 'user not found' }) }
+
+    if (user.status === false) { return res.status(401).json({ error: 'user not autorized' }); }
+
 
     if (!await user.checkPassword(password)) {
       return res.status(401).json({ error: 'password does not match' });
     }
-    const { id, name } = user;
+
+    const { id, name, status, level } = user;
     return res.json({
       user: {
         id,
         name,
         email,
+        status,
+        level
       },
       token: jwt.sign({ id }, authConfig.secret, { expiresIn: '7d' })
     })
