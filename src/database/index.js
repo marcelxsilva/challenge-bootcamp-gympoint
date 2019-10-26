@@ -4,8 +4,9 @@ import databaseConfig from '../config/database';
 // models
 import Users from '../app/models/Users';
 import AcademyPlan from '../app/models/AcademyPlan';
+import Checkin from '../app/models/Checkin';
 
-const models = [Users, AcademyPlan];
+const models = [Users, AcademyPlan,Checkin];
 
 class Database {
   constructor() {
