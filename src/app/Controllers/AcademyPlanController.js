@@ -41,7 +41,7 @@ class AcademyPlanController {
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'validation fails' });
     }
-    const plan = await AcademyPlan.findByPk(req.body.id_plan);
+    const plan = await AcademyPlan.findByPk(req.params.id);
     if (!plan) { return res.status(400).json({ error: 'error in update plan id empty' }) }
 
     const { title, duration, price } = await plan.update(req.body);
@@ -56,12 +56,10 @@ class AcademyPlanController {
 
   }
   async delete(req, res) {
-    const { id_plan } = req.body;
-
-    const plan = await AcademyPlan.findByPk(id_plan);
+    const plan = await AcademyPlan.findByPk(req.params.id);
     if (!plan) { return res.status(400).json({ error: 'plan not exists' }) }
 
-    const deletedPlan = await AcademyPlan.destroy({ where: { id: id_plan } });
+    const deletedPlan = await AcademyPlan.destroy({ where: { id: req.params.id } });
     return deletedPlan && res.status(200).json({ message: 'deleted with success' })
   }
 }

@@ -18,8 +18,8 @@ routes.put('/users', UsersController.update);
 // plan 
 routes.get('/plan', AcademyPlanController.index);
 routes.post('/plan', AcademyPlanController.store);
-routes.put('/plan', AcademyPlanController.update);
-routes.delete('/plan', AcademyPlanController.delete);
+routes.put('/plan/:id', AcademyPlanController.update);
+routes.delete('/plan/:id', AcademyPlanController.delete);
 
 //associate user to plan
 routes.post('/associatePlan', verifyIsAdmin, CreateRegistrationPlanController.store);
