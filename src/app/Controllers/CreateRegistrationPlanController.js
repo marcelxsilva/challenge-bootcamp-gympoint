@@ -3,7 +3,7 @@ import AcademyPlan from '../models/AcademyPlan';
 
 class CreateRegistratioPlanController {
   async store(req, res) {
-    const { id_user, id_plan } = req.headers;
+    const { id_user, id_plan } = req.body;
 
     const userExists = await Users.findByPk(id_user);
     if (!userExists) { return res.status(400).json({ error: 'user not exists' }) }
@@ -16,7 +16,7 @@ class CreateRegistratioPlanController {
   }
 
   async update(req, res) {
-    const { id_user, id_plan, status_users} = req.headers;
+    const { id_user, id_plan, status_users} = req.body;
 
     const user = await Users.findByPk(id_user);
     if (!user) { return res.status(400).json({ error: 'user not exists' }) }

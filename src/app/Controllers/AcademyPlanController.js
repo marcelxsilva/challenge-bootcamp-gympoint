@@ -3,7 +3,7 @@ import * as yup from 'yup';
 
 class AcademyPlanController {
   async index(req, res) {
-    const { id_plan } = req.headers;
+    const { id_plan } = req.body;
     const plan = await AcademyPlan.findByPk(id_plan);
     if (!plan) {
       const findAll = await AcademyPlan.findAll();
@@ -20,14 +20,14 @@ class AcademyPlanController {
       price: yup.string().required(),
     });
 
-    if (!(await schema.isValid(req.headers))) {
+    if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'validation fails' });
     }
 
-    const planExists = await AcademyPlan.findOne({ where: { title: req.headers.title } });
+    const planExists = await AcademyPlan.findOne({ where: { title: req.body.title } });
     if (planExists) { return res.status(400).json({ error: 'is plan has exists' }) };
 
-    const plan = await AcademyPlan.create(req.headers);
+    const plan = await AcademyPlan.create(req.body);
     return res.json(plan)
   }
 
@@ -38,13 +38,13 @@ class AcademyPlanController {
       price: yup.string(),
     });
 
-    if (!(await schema.isValid(req.headers))) {
+    if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'validation fails' });
     }
-    const plan = await AcademyPlan.findByPk(req.headers.id_plan);
+    const plan = await AcademyPlan.findByPk(req.body.id_plan);
     if (!plan) { return res.status(400).json({ error: 'error in update plan id empty' }) }
 
-    const { title, duration, price } = await plan.update(req.headers);
+    const { title, duration, price } = await plan.update(req.body);
 
     return res.json({
       plan: {
@@ -56,7 +56,7 @@ class AcademyPlanController {
 
   }
   async delete(req, res) {
-    const { id_plan } = req.headers;
+    const { id_plan } = req.body;
 
     const plan = await AcademyPlan.findByPk(id_plan);
     if (!plan) { return res.status(400).json({ error: 'plan not exists' }) }

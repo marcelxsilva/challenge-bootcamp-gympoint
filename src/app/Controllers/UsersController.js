@@ -11,12 +11,12 @@ class UserController {
       level: yup.number().required()
     });
 
-    if (!(await schema.isValid(req.headers))) {
+    if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'validation fails' })
     }
-    const userExists = await Users.findOne({ where: { email: req.headers.email } });
+    const userExists = await Users.findOne({ where: { email: req.body.email } });
     if (userExists) { return res.status(400).json({ error: 'users already exists' }); }
-    const { id, name, email, level } = await Users.create(req.headers);
+    const { id, name, email, level } = await Users.create(req.body);
 
     return res.json({
       user: {
@@ -37,10 +37,10 @@ class UserController {
         password_entry ? field.required() : field;
       })
     });
-    if (!(await schema.isValid(req.headers))) {
+    if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'validation fails in password' })
     }
-    const { email, oldPassword } = req.headers;
+    const { email, oldPassword } = req.body;
     const user = await Users.findByPk(req.userId);
 
     if (email !== user.email) {
@@ -52,7 +52,7 @@ class UserController {
       return res.status(401).json({ error: 'password does not match' });
     }
 
-    const { id, name, level } = await user.update(req.headers);
+    const { id, name, level } = await user.update(req.body);
     return res.json({
       id,
       name,

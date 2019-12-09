@@ -1,4 +1,4 @@
 export default {
-  secret: 'minhaKey',
-  expiredIn: '7m'
+  secret: 'YXNhc2FzWVhOaGMyRnpZWE5oYzJGeg==',
+  expiredIn: '1d'
 }

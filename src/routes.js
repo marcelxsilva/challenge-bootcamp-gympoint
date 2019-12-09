@@ -1,5 +1,4 @@
 import { Router } from 'express';
-
 import verifyIsAdmin from './app/middlewares/verifyIsAdmin';
 import authMiddleware from './app/middlewares/auth';
 import UsersController from './app/Controllers/UsersController';
