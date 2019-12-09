@@ -26,6 +26,8 @@ routes.delete('/plan/:id', AcademyPlanController.delete);
 //associate user to plan
 routes.post('/associatePlan', verifyIsAdmin, CreateRegistrationPlanController.store);
 routes.put('/associatePlan', verifyIsAdmin, CreateRegistrationPlanController.update);
+
 routes.post('/manager-registration', ManagerRegistrationController.store);
+routes.get('/manager-registration', ManagerRegistrationController.index);
 
 export default routes;

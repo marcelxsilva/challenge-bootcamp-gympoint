@@ -17,19 +17,26 @@ class ManagerRegistration {
     }
 
     const { duration, price } = AcademyPlan.findOne({ where: { id: req.body.plan_id } });
+    const dateFormatted = addMonths(parseISO(req.body.start_date), duration);
+    const priceFormatted = duration * price;
 
     const response = await ManagerRegistrationModel.create({
       ...req.body,
-      end_date: addMonths(parseISO(req.body.start_date), duration),
-      price: duration * price,
+      end_date: dateFormatted,
+      price: priceFormatted,
     })
-
     return res.json(response);
   }
 
   async index(req, res) {
-    const response = await ManagerRegistrationModel.findAll({ id: 1 })
-    return res.json(response)
+    const { user_id } = req.body;
+    if (user_id) {
+      const response = await ManagerRegistrationModel.findByPk(user_id)
+      return res.json(response)
+    } else {
+      const response = await ManagerRegistrationModel.findAll()
+      return res.json(response)
+    }
   }
 }
 export default new ManagerRegistration();
