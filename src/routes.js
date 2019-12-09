@@ -6,6 +6,8 @@ import SessionController from './app/Controllers/SessionController';
 import AcademyPlanController from './app/Controllers/AcademyPlanController';
 import CreateRegistrationPlanController from './app/Controllers/CreateRegistrationPlanController';
 import CheckinController from './app/Controllers/CheckinController';
+import ManagerRegistrationController from './app/Controllers/ManagerRegistrationController';
+
 const routes = new Router();
 
 routes.post('/users', UsersController.store);
@@ -24,5 +26,6 @@ routes.delete('/plan/:id', AcademyPlanController.delete);
 //associate user to plan
 routes.post('/associatePlan', verifyIsAdmin, CreateRegistrationPlanController.store);
 routes.put('/associatePlan', verifyIsAdmin, CreateRegistrationPlanController.update);
+routes.post('/manager-registration', ManagerRegistrationController.store);
 
 export default routes;
