@@ -7,6 +7,7 @@ import AcademyPlanController from './app/Controllers/AcademyPlanController';
 import CreateRegistrationPlanController from './app/Controllers/CreateRegistrationPlanController';
 import CheckinController from './app/Controllers/CheckinController';
 import ManagerRegistrationController from './app/Controllers/ManagerRegistrationController';
+import HelpOrdersController from './app/Controllers/HelpOrdersController';
 
 const routes = new Router();
 
@@ -34,5 +35,9 @@ routes.delete('/manager-registration', ManagerRegistrationController.delete);
 
 routes.post('/checkin', CheckinController.store);
 routes.get('/checkin', CheckinController.index);
+
+routes.post('/students/:student_id/help-orders', HelpOrdersController.store);
+routes.get('/students/help-orders', HelpOrdersController.index);
+routes.put('/students/help-orders/answer', HelpOrdersController.update);
 
 export default routes;
