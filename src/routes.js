@@ -12,7 +12,6 @@ const routes = new Router();
 
 routes.post('/users', UsersController.store);
 routes.post('/session', SessionController.store);
-routes.post('/checkin', CheckinController.store);
 
 routes.use(authMiddleware);
 routes.put('/users', UsersController.update);
@@ -31,5 +30,9 @@ routes.post('/manager-registration', ManagerRegistrationController.store);
 routes.get('/manager-registration', ManagerRegistrationController.index);
 routes.put('/manager-registration', ManagerRegistrationController.update);
 routes.delete('/manager-registration', ManagerRegistrationController.delete);
+
+
+routes.post('/checkin', CheckinController.store);
+routes.get('/checkin', CheckinController.index);
 
 export default routes;

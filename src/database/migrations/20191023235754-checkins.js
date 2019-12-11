@@ -9,7 +9,13 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true
       },
-      student_id: { type: Sequelize.INTEGER },
+      student_id: {
+        type: Sequelize.INTEGER,
+        references: { model: 'users', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+        allowNull: false
+      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false
