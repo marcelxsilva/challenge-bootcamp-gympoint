@@ -1,7 +1,10 @@
 import ManagerRegistrationModel from '../models/ManagerRegistration';
 import AcademyPlan from '../models/AcademyPlan';
-import { addMonths, parseISO } from 'date-fns';
+import Users from '../models/Users';
+import { addMonths, parseISO, format } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 import * as yup from 'yup';
+import Mail from '../../lib/Mail';
 
 class ManagerRegistration {
 
@@ -15,9 +18,12 @@ class ManagerRegistration {
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'validation fails' })
     }
-    const { duration, price } = await AcademyPlan.findOne({ where: { id: req.body.plan_id } })
+    const { duration, price, title } = await AcademyPlan.findOne({ where: { id: req.body.plan_id } })
     const date_end_formatted = addMonths(parseISO(req.body.start_date), +duration)
     const priceFormatted = price * duration;
+
+    const user = await Users.findOne({ where: { id: req.body.student_id, active: true } });
+    if (!user) { return res.status(401).json({ response: 'user not authorized' }) }
 
     const response = await ManagerRegistrationModel.create({
       student_id: req.body.student_id,
@@ -25,7 +31,24 @@ class ManagerRegistration {
       start_date: parseISO(req.body.start_date),
       end_date: date_end_formatted,
       price: priceFormatted,
-    })
+    });
+
+    if (response) {
+      await Mail.sendMail({
+        to: `${user.name} <${user.email}>`,
+        subject: 'Matricula Cadastrada',
+        template: 'registrationCreate',
+        context: {
+          title,
+          name: user.name,
+          end: format(date_end_formatted,
+            "'dia' dd 'de' MMMM', as ' H:mm:h",
+            { locale: pt }
+          ),
+          price: priceFormatted,
+        }
+      })
+    }
     return res.send({ response })
   }
 
@@ -33,10 +56,10 @@ class ManagerRegistration {
     const { student_id } = req.body;
     if (student_id) {
       const response = await ManagerRegistrationModel.findOne({ where: { student_id } })
-      return res.json({response})
+      return res.json({ response })
     } else {
       const response = await ManagerRegistrationModel.findAll()
-      return res.json({response})
+      return res.json({ response })
     }
   }
 
