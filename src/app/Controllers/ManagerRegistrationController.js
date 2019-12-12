@@ -55,10 +55,14 @@ class ManagerRegistration {
   async index(req, res) {
     const { student_id } = req.body;
     if (student_id) {
-      const response = await ManagerRegistrationModel.findOne({ where: { student_id } })
+      const response = await ManagerRegistrationModel.findOne(
+        {
+          where: { student_id },
+          attributes: ['id', 'start_date', 'end_date', 'price', 'active']
+        })
       return res.json({ response })
     } else {
-      const response = await ManagerRegistrationModel.findAll()
+      const response = await ManagerRegistrationModel.findAll({ attributes: ['id', 'start_date', 'end_date', 'price', 'active'] })
       return res.json({ response })
     }
   }
