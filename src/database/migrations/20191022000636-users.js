@@ -25,7 +25,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      status: {
+      active: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: true,

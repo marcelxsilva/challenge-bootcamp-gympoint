@@ -11,7 +11,7 @@ class User extends Model {
       password_entry: Sequelize.VIRTUAL,
       password: Sequelize.STRING,
       level: Sequelize.INTEGER,
-      status: Sequelize.BOOLEAN
+      active: Sequelize.BOOLEAN
     }, {
       sequelize,
     });
