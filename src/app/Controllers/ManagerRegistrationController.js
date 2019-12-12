@@ -15,27 +15,28 @@ class ManagerRegistration {
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'validation fails' })
     }
-
-    const { duration, price } = AcademyPlan.findOne({ where: { id: req.body.plan_id } });
-    const dateFormatted = addMonths(parseISO(req.body.start_date), duration);
-    const priceFormatted = duration * price;
+    const { duration, price } = await AcademyPlan.findOne({ where: { id: req.body.plan_id } })
+    const date_end_formatted = addMonths(parseISO(req.body.start_date), +duration)
+    const priceFormatted = price * duration;
 
     const response = await ManagerRegistrationModel.create({
-      ...req.body,
-      end_date: dateFormatted,
+      student_id: req.body.student_id,
+      plan_id: req.body.plan_id,
+      start_date: parseISO(req.body.start_date),
+      end_date: date_end_formatted,
       price: priceFormatted,
     })
-    return res.json(response);
+    return res.send({ response })
   }
 
   async index(req, res) {
     const { student_id } = req.body;
     if (student_id) {
-      const response = await ManagerRegistrationModel.findByPk(student_id)
-      return res.json(response)
+      const response = await ManagerRegistrationModel.findOne({ where: { student_id } })
+      return res.json({response})
     } else {
       const response = await ManagerRegistrationModel.findAll()
-      return res.json(response)
+      return res.json({response})
     }
   }
 
@@ -51,7 +52,7 @@ class ManagerRegistration {
       return res.status(400).json({ error: 'validation fails' })
     }
 
-    const { duration, price } = AcademyPlan.findOne({ where: { id: req.body.plan_id } });
+    const { duration, price } = await AcademyPlan.findOne({ where: { id: req.body.plan_id } });
     const dateFormatted = addMonths(parseISO(req.body.start_date), duration);
     const priceFormatted = duration * price;
 
@@ -68,8 +69,8 @@ class ManagerRegistration {
     try {
       const { student_id } = req.body;
       const response = await ManagerRegistrationModel.destroy({ where: { student_id } })
-      if(response){
-        return res.json({response: 'success'})
+      if (response) {
+        return res.json({ response: 'success' })
       }
     } catch (error) {
 
