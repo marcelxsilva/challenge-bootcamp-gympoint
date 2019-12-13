@@ -59,9 +59,16 @@ class UserController {
       email,
       level
     });
-
-
-
+  }
+  async index(req, res) {
+    const { id } = req.body;
+    if (id) {
+      const response = await Users.findByPk(id);
+      return res.json({ response })
+    } else {
+      const response = await Users.findAll();
+      return res.json({ response })
+    }
   }
 }
 export default new UserController();
