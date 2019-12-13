@@ -25,7 +25,19 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      status: {
+      age: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      burden: {
+        type: Sequelize.FLOAT,
+        allowNull: true,
+      },
+      height: {
+        type: Sequelize.FLOAT,
+        allowNull: true,
+      },
+      active: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: true,

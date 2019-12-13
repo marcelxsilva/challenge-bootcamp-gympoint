@@ -1,7 +1,10 @@
 import ManagerRegistrationModel from '../models/ManagerRegistration';
 import AcademyPlan from '../models/AcademyPlan';
-import { addMonths, parseISO } from 'date-fns';
+import Users from '../models/Users';
+import { addMonths, parseISO, format } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 import * as yup from 'yup';
+import Mail from '../../lib/Mail';
 
 class ManagerRegistration {
 
@@ -15,27 +18,52 @@ class ManagerRegistration {
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'validation fails' })
     }
+    const { duration, price, title } = await AcademyPlan.findOne({ where: { id: req.body.plan_id } })
+    const date_end_formatted = addMonths(parseISO(req.body.start_date), +duration)
+    const priceFormatted = price * duration;
 
-    const { duration, price } = AcademyPlan.findOne({ where: { id: req.body.plan_id } });
-    const dateFormatted = addMonths(parseISO(req.body.start_date), duration);
-    const priceFormatted = duration * price;
+    const user = await Users.findOne({ where: { id: req.body.student_id, active: true } });
+    if (!user) { return res.status(401).json({ response: 'user not authorized' }) }
 
     const response = await ManagerRegistrationModel.create({
-      ...req.body,
-      end_date: dateFormatted,
+      student_id: req.body.student_id,
+      plan_id: req.body.plan_id,
+      start_date: parseISO(req.body.start_date),
+      end_date: date_end_formatted,
       price: priceFormatted,
-    })
-    return res.json(response);
+    });
+
+    if (response) {
+      await Mail.sendMail({
+        to: `${user.name} <${user.email}>`,
+        subject: 'Matricula Cadastrada',
+        template: 'registrationCreate',
+        context: {
+          title,
+          name: user.name,
+          end: format(date_end_formatted,
+            "'dia' dd 'de' MMMM', as ' H:mm:h",
+            { locale: pt }
+          ),
+          price: priceFormatted,
+        }
+      })
+    }
+    return res.send({ response })
   }
 
   async index(req, res) {
     const { student_id } = req.body;
     if (student_id) {
-      const response = await ManagerRegistrationModel.findByPk(student_id)
-      return res.json(response)
+      const response = await ManagerRegistrationModel.findOne(
+        {
+          where: { student_id },
+          attributes: ['id', 'start_date', 'end_date', 'price', 'active']
+        })
+      return res.json({ response })
     } else {
-      const response = await ManagerRegistrationModel.findAll()
-      return res.json(response)
+      const response = await ManagerRegistrationModel.findAll({ attributes: ['id', 'start_date', 'end_date', 'price', 'active'] })
+      return res.json({ response })
     }
   }
 
@@ -51,7 +79,7 @@ class ManagerRegistration {
       return res.status(400).json({ error: 'validation fails' })
     }
 
-    const { duration, price } = AcademyPlan.findOne({ where: { id: req.body.plan_id } });
+    const { duration, price } = await AcademyPlan.findOne({ where: { id: req.body.plan_id } });
     const dateFormatted = addMonths(parseISO(req.body.start_date), duration);
     const priceFormatted = duration * price;
 
@@ -68,8 +96,8 @@ class ManagerRegistration {
     try {
       const { student_id } = req.body;
       const response = await ManagerRegistrationModel.destroy({ where: { student_id } })
-      if(response){
-        return res.json({response: 'success'})
+      if (response) {
+        return res.json({ response: 'success' })
       }
     } catch (error) {
 

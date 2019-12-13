@@ -11,11 +11,11 @@ import HelpOrdersController from './app/Controllers/HelpOrdersController';
 
 const routes = new Router();
 
-routes.post('/users', UsersController.store);
 routes.post('/session', SessionController.store);
 
 routes.use(authMiddleware);
 routes.put('/users', UsersController.update);
+routes.post('/users', UsersController.store);
 
 // plan 
 routes.get('/plan', AcademyPlanController.index);
