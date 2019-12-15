@@ -70,5 +70,12 @@ class UserController {
       return res.json({ response })
     }
   }
+
+  async delete(req, res) {
+    const { id } = req.params;
+    const response = await Users.findOne({ where: { id } });
+    response.destroy()
+    return response && res.json({ response: 'deleted with success' })
+  }
 }
 export default new UserController();
