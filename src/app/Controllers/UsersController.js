@@ -41,24 +41,14 @@ class UserController {
       return res.status(400).json({ error: 'validation fails in password' })
     }
     const { email, oldPassword } = req.body;
-    const user = await Users.findByPk(req.userId);
-
-    if (email !== user.email) {
-      const userExists = await Users.findOne({ where: { email: email } });
-      if (userExists) { return res.status(400).json({ error: 'email already exists' }); }
-    }
+    const user = await Users.findOne({ where: { email } });
 
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
       return res.status(401).json({ error: 'password does not match' });
     }
 
-    const { id, name, level } = await user.update(req.body);
-    return res.json({
-      id,
-      name,
-      email,
-      level
-    });
+    const { id, name, age, height, burden } = await user.update(req.body);
+    return res.json({ id, name, email, age, height, burden });
   }
   async index(req, res) {
     const { id } = req.body;
