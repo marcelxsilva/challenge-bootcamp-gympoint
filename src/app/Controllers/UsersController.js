@@ -28,6 +28,31 @@ class UserController {
     });
   }
 
+  async create(req, res) {
+    const schema = yup.object().shape({
+      name: yup.string().required(),
+      email: yup.string().email().required(),
+      age: yup.number(),
+      burden: yup.string(),
+      height: yup.string(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'validation fails' })
+    }
+    const userExists = await Users.findOne({ where: { email: req.body.email } });
+    if (userExists) { return res.status(400).json({ error: 'users already exists' }); }
+
+    const { id, name, email } = await Users.create({ ...req.body, level: 2 });
+    return res.json({
+      user: {
+        id,
+        name,
+        email,
+      }
+    });
+  }
+
   async update(req, res) {
     const schema = yup.object().shape({
       email: yup.string().email().required(),
