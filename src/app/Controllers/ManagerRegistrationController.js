@@ -92,16 +92,16 @@ class ManagerRegistration {
 
   async update(req, res) {
     const schema = yup.object().shape({
-      student_id: yup.number().required(),
-      plan_id: yup.number().required(),
-      start_date: yup.date().required(),
-      end_date: yup.date().required(),
+      student_id: yup.string().required(),
+      plan_id: yup.string().required(),
+      start_date: yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'validation fails' })
     }
-
+    const user = await Users.findOne({ where: { id: req.body.student_id } });
+    user.update({ plan_id: req.body.plan_id })
     const { duration, price } = await AcademyPlan.findOne({ where: { id: req.body.plan_id } });
     const dateFormatted = addMonths(parseISO(req.body.start_date), duration);
     const priceFormatted = duration * price;
