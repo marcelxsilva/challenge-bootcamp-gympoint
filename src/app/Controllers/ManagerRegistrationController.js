@@ -1,6 +1,7 @@
 import ManagerRegistrationModel from '../models/ManagerRegistration';
 import AcademyPlan from '../models/AcademyPlan';
 import Users from '../models/Users';
+import AcademyPlan from '../models/AcademyPlan';
 import { addMonths, parseISO, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import * as yup from 'yup';
@@ -62,7 +63,19 @@ class ManagerRegistration {
         })
       return res.json({ response })
     } else {
-      const response = await ManagerRegistrationModel.findAll({ attributes: ['id', 'start_date', 'end_date', 'price', 'active'] })
+      const response = await ManagerRegistrationModel.findAll({
+        attributes: ['id', 'start_date', 'end_date', 'price', 'active'],
+        include: [{
+          model: Users,
+          as: 'users',
+          attributes: ['id', 'name'],
+        }],
+        include: [{
+          model: AcademyPlan,
+          as: 'plan',
+          attributes: ['title'],
+        }],
+      })
       return res.json({ response })
     }
   }

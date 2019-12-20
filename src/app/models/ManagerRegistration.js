@@ -1,5 +1,5 @@
 import Sequelize, { Model } from 'sequelize';
-import { isBefore, isAfter} from 'date-fns'
+import { isBefore, isAfter } from 'date-fns'
 class ManagerRegistration extends Model {
 
   static init(sequelize) {
@@ -24,6 +24,11 @@ class ManagerRegistration extends Model {
     }, { sequelize })
 
     return this;
+  }
+  static associate(models) {
+    console.log(models)
+    this.belongsTo(models.AcademyPlan, { foreignKey: 'plan_id', as: 'plan' });
+    this.belongsTo(models.User, { foreignKey: 'student_id', as: 'users' });
   }
 }
 export default ManagerRegistration;
