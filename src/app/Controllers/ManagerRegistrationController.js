@@ -25,6 +25,7 @@ class ManagerRegistration {
 
     const user = await Users.findOne({ where: { id: req.body.student_id, active: true } });
     if (!user) { return res.status(401).json({ response: 'user not authorized' }) }
+    user.update({ plan_id: req.body.plan_id });
 
     const response = await ManagerRegistrationModel.create({
       student_id: req.body.student_id,
@@ -56,27 +57,36 @@ class ManagerRegistration {
   async index(req, res) {
     const { student_id } = req.body;
     if (student_id) {
-      const response = await ManagerRegistrationModel.findOne(
-        {
-          where: { student_id },
-          attributes: ['id', 'start_date', 'end_date', 'price', 'active']
-        })
-      return res.json({ response })
-    } else {
-      const response = await ManagerRegistrationModel.findAll({
-        attributes: ['id', 'start_date', 'end_date', 'price', 'active'],
+      const response = await ManagerRegistrationModel.findOne({
+        attributes: ['id', 'start_date', 'end_date', 'price', 'active', 'plan_id'],
         include: [{
           model: Users,
           as: 'users',
           attributes: ['id', 'name'],
-        }],
-        include: [{
-          model: AcademyPlan,
-          as: 'plan',
-          attributes: ['title'],
+          include: [{
+            model: AcademyPlan,
+            as: 'plan',
+            attributes: ['title'],
+          }],
         }],
       })
       return res.json({ response })
+    } else {
+      const response = await ManagerRegistrationModel.findAll({
+        attributes: ['id', 'start_date', 'end_date', 'price', 'active', 'plan_id'],
+        include: [{
+          model: Users,
+          as: 'users',
+          attributes: ['id', 'name'],
+          include: [{
+            model: AcademyPlan,
+            as: 'plan',
+            attributes: ['title'],
+          }],
+        }],
+      })
+      return res.json({ response })
+
     }
   }
 
@@ -107,8 +117,8 @@ class ManagerRegistration {
 
   async delete(req, res) {
     try {
-      const { student_id } = req.body;
-      const response = await ManagerRegistrationModel.destroy({ where: { student_id } })
+      const { id } = req.params;
+      const response = await ManagerRegistrationModel.destroy({ where: { id } })
       if (response) {
         return res.json({ response: 'success' })
       }

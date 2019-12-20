@@ -33,7 +33,7 @@ routes.put('/associatePlan', verifyIsAdmin, CreateRegistrationPlanController.upd
 routes.post('/manager-registration', ManagerRegistrationController.store);
 routes.get('/manager-registration', ManagerRegistrationController.index);
 routes.put('/manager-registration', ManagerRegistrationController.update);
-routes.delete('/manager-registration', ManagerRegistrationController.delete);
+routes.delete('/manager-registration/:id', ManagerRegistrationController.delete);
 
 
 routes.post('/checkin', CheckinController.store);
